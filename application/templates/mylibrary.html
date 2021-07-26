@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Library buttons section -->
+<div class="container-fulid bg-primary text-center">
+  <div class="d-inline-flex">
+      <form class="p-3" action="{{ url_for("mylibrary", library="favorites") }}" method="GET">
+          <button type="submit" class="btn library-btn btn{% if library!="favorites" %}-outline{% endif %}-light p-2">
+            <h4 class="pt-1">Favorites</h4>
+          </button>
+      </form>
+  </div>
+  <div class="d-inline-flex">
+      <form class="p-3" action="{{ url_for("mylibrary", library="reading") }}" method="GET">
+          <button type="submit" class="btn library-btn btn{% if library!="reading" %}-outline{% endif %}-light p-2">
+            <h4 class="pt-1">Reading</h4>
+          </button>
+      </form>
+  </div>
+  <div class="d-inline-flex">
+      <form class="p-3" action="{{ url_for("mylibrary", library="completed") }}" method="GET">
+          <button type="submit" class="btn library-btn btn{% if library!="completed" %}-outline{% endif %}-light p-2">
+            <h4 class="pt-1">Completed</h4>
+          </button>
+      </form>
+  </div>
+  <div class="d-inline-flex">
+      <form class="p-3" action="{{ url_for("mylibrary", library="planned") }}" method="GET">
+          <button type="submit" class="btn library-btn btn{% if library!="planned" %}-outline{% endif %}-light p-2">
+            <h4 class="pt-1">Planned</h4>
+          </button>
+      </form>
+  </div>
+</div>
+
+<!-- Book shelves section -->
+<section class="d-md-flex justify-content-center justify-content-md-start py-4 mb-2 text-center container">
+        <div class="border border-2 rounded-3 container">
+            <div class="row row-cols-2 row-cols-md-4 g-4 mt-0 pb-2">
+              {% for book in books.items %}
+                  <div class="col">
+                    <div class="card">
+                      <a href="{{ url_for("book", book_id=book.id) }}"><img src="{{ book.image_url }}" class="card-img-top" alt="{{ book.title }}"></a>
+                      <div class="card-body">
+                        <div class="row g-0">
+                            <div class="col">
+                                <i class="fas fa-star star-color">{{ book.rating }}</i>
+                            </div>
+                            <div class="col">
+                                {% if book.year >= 0 %}
+                                    <div class="border border-dark rounded-3 w-75">{{ book.year }}</div>
+                                {% else %}
+                                    <div class="border border-dark rounded-3 w-75">{{ book.year|abs }}BC</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <hr/>
+                        <p class="card-text">
+                          <a href="{{ url_for("book", book_id=book.id) }}" class="no-underline">{{ extract("t", book.title) }}</a><br>
+                          By {{ extract("a", book.written_by[0].name) | replace(", ", " and ") }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+              {% endfor %}
+            </div>
+        </div>
+</section>
+
+<!-- Pagination buttons -->
+<div class="container-fulid bg-primary text-center">
+  <div class="d-inline-flex">
+    {% for page_num in books.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
+      {% if page_num %}
+        {% if books.page == page_num %}
+          <a class="btn btn-light my-3 mx-2" href="{{ url_for("mylibrary", library=library, page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-light my-3 mx-2" href="{{ url_for("mylibrary", library=library, page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        <div class="px-2"></div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

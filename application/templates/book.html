@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- The whole book -->
+<div class="container mt-4">
+    <div class="row row-cols-1 row-cols-md-2 g-4 align-items-center">
+        <!-- Book info section -->
+        <div class="col-lg-8 col-md-8 text-center text-md-start">
+            <div class="border border-2 rounded-3">
+                <div class="row row-cols-1 row-cols-md-2 g-0 align-items-center">
+                    <div class="col-lg-6 col-md-8 text-center text-md-start">
+                        <div class="m-2 mt-4 mt-md-2">
+                            <img class="lg-book-image" src="{{ book.image_url }}" alt="{{ book.title }}">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 mx-auto my-auto">
+                        <div class="d-flex-inline my-3 mb-4 text-center pe-md-4">
+                            <h2 class="mt-4 mb-0">{{ extract("t", book.title) }}</h2><br>
+                            <h4>By{% for author in book.written_by[0].name.split(", ") %}{% if loop.index != 1 %},{% endif %} <a class="no-underline" href="{{ url_for("search", q=author) }}">{{ author }}</a>{% endfor %}</h4>
+                            <h6 class="text-secondary">ISBN: {{ book.isbn }}</h6><br>
+                            <div class="card text-center mx-auto w-75">
+                                <div class="card-body py-2 pb-0">
+                                    <i class="fas fa-star star-color">{{ book.rating }}</i><br>
+                                    <p>Rated by <span class="text-primary">{{ book.num_ratings }}</span> reader</p>
+                                </div>
+                            </div>
+                            <a target="_blank" href="{{ more_url }}"
+                            class="btn btn-outline-info p-2 my-4 mt-5">More about the book</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My library section -->
+        <div class="col-lg-4 col-md-8">
+            <div class="border border-2 rounded-3">
+                <h2 class="m-4 text-center">My Library</h2>
+                <hr/>
+                <div class="d-flex-inline text-center py-4 ">
+                    {% if current_user.is_authenticated %}
+                        <h5>Book status:</h5>
+                        <form class="w-75 mx-auto" action="{{ url_for("update", book_id=book.id) }}" method="GET">
+                            <select name="lib" class="form-select" aria-label="Book status">
+                                <option {% if not status %}selected{% endif %} disabled>Add this book to</option>
+                                <option value="r" {% if status[0] == "r" %}selected{% endif %}>Reading</option>
+                                <option value="c" {% if status[0] == "c" %}selected{% endif %}>Completed</option>
+                                <option value="p" {% if status[0] == "p" %}selected{% endif %}>Planned</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary my-2">Update</button>
+                            {% if status %}
+                            <a href="{{ url_for("rem_lib", book_id=book.id) }}">Remove</a>
+                            {% endif %}
+                        </form>
+                        <form class="w-75 mx-auto my-5" action="{{ url_for("update", book_id=book.id) }}" method="GET">
+                            <input type="hidden" name="lib" value="f">
+                            {% if not fav %}
+                            <button type="submit" class="btn btn-primary my-2"><i class="fas fa-star text-light me-2"></i>Add to favourites</button>
+                            {% else %}
+                            <button type="submit" class="btn btn-danger mt-2">Remove from favourites</button>
+                            {% endif %}
+                        </form>
+                    {% else %}
+                        <div class="my-md-auto pt-md-3 pb-3">
+                            <p class="lead text-muted text-center">
+                                You need to be a member<br>
+                                to access this section
+                            </p>
+                            <p class="mt-2 text-center">
+                                <a href="{{ url_for("register") }}" class="btn btn-primary">Register now</a>
+                                or
+                                <a href="{{ url_for("login") }}" class="btn btn-secondary">Login</a>
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- You may also like section -->
+<section class="d-md-flex justify-content-center justify-content-md-start py-4 mt-0 mb-2 text-center container">
+    {% if related_books %}
+        <div class="border border-2 rounded-3 container">
+            <h3 class="text-dark m-3 text-center text-md-start">You may also like</h3>
+            <div class="row row-cols-2 row-cols-md-4 g-4 pb-2">
+              {% for book in related_books %}
+                  <div class="col">
+                    <div class="card">
+                      <a href="{{ url_for("book", book_id=book.id) }}"><img src="{{ book.image_url }}" class="card-img-top" alt="{{ book.title }}"></a>
+                      <div class="card-body">
+                        <i class="fas fa-star star-color">{{ book.rating }}</i>
+                        <hr/>
+                        <p class="card-text">
+                          <a href="{{ url_for("book", book_id=book.id) }}" class="no-underline">{{ extract("t", book.title) }}</a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+              {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</section>
+{% endblock content %}

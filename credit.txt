@@ -1,0 +1,5 @@
+# Some html code was grabbed from the official bootstrap website
+# The site was made with the help of Corey Schafer's YouTube tutorials
+# The books.csv file is from "https://github.com/zygmuntz/goodbooks-10k", thank you for the fantastic work
+# Most of the images are not mine, but random images on google, i don't know the original sources
+# The covers of the books are goodreads' urls

@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Page intro -->
+<section class="py-5 pb-4 text-center container">
+    <div class="row py-lg-4 pt-lg-3">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="fw-light">Welcome to the bookshelf!</h1>
+        {% if current_user.is_authenticated %}
+          <p class="lead text-muted">
+              You can add any book to your library now!<br>
+              <a href="{{ url_for("discover") }}" class="btn btn-primary mt-3">Discover books</a>
+          </p>
+        {% else %}
+          <p class="lead text-muted">
+              You can add any book to your library,<br>
+              you only need to register.
+          </p>
+          <p class="mt-2">
+            <a href="{{ url_for("register") }}" class="btn btn-primary">Register now</a>
+            or
+            <a href="{{ url_for("login") }}" class="btn btn-secondary">Login</a>
+          </p>
+        {% endif %}
+      </div>
+    </div>
+</section>
+
+<!-- Books importance section -->
+<section class="text-center bg-primary">
+  <div class="container">
+    <div class="row py-4">
+      <div class="col-lg-5 col-md-8 m-auto">
+        <img src="/static/assets/books.png" class="w-75" alt="Stacked books">
+      </div>
+      <div class="col-lg-6 col-md-8 text-light text-md-start m-auto">
+        <h2>
+          Books are important for our daily life
+        </h2>
+        <p class="lead">
+          We know how books can make substantial changes to people's lives, and we know how valuable books are.
+          We also can get overwhelmed by the many books that get recommended each and every day, and that's why we made
+          an easy solution to track your progress and your reading list.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Database categories section -->
+<section class="text-center home-box">
+  <div class="container bg-light">
+    <div class="row py-4">
+      <div class="col-lg-6 col-md-8 text-md-start m-auto">
+        <h2>
+          There are many categories to sort by
+        </h2>
+        <p class="lead">
+          Our database holds 10,000 books. You can easily sort by authors, titles, dates and ratings!
+          We've made it so easy that the database will pick a random year and give you the highest rated books below.
+        </p>
+      </div>
+      <div class="col-lg-5 col-md-8 m-auto">
+        <img src="/static/assets/library.png" class="w-50" alt="Stacked books">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Random year books section -->
+<section class="py-3 text-center container">
+    <h1 class="fw-light py-4 mb-3"><span class="badge bg-secondary">The best books of {{ year }}</span></h1>
+    <div class="row row-cols-2 row-cols-md-4 g-4 pb-2">
+      {% for book in books %}
+      <div class="col">
+        <div class="card">
+          <a href="{{ url_for("book", book_id=book.id) }}"><img src="{{ book.image_url }}" class="card-img-top" alt="{{ book.title }}"></a>
+          <div class="card-body">
+            <i class="fas fa-star star-color">{{ book.rating }}</i>
+            <hr/>
+            <p class="card-text">
+              <a href="{{ url_for("book", book_id=book.id) }}" class="no-underline">{{ extract("t", book.title) }}</a><br>
+              By {{ extract("a", book.written_by[0].name) | replace(", ", " and ") }}
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+</section>
+{% endblock content %}

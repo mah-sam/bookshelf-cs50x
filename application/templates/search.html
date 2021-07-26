@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% if books.items %}
+  <!-- input section -->
+  <div class="d-flex flex-row text-center mx-auto justify-content-center">
+      <form action="{{ url_for("search") }}" method="GET" class="w-75 mx-auto my-4">
+          <input name="q" value="{{ q }}" class="form-control my-2 bg-dark text-light" type="search" placeholder="Search Book or Author" aria-label="Search">
+          <button class="btn btn-outline-primary" type="submit">Search</button>
+      </form>
+  </div>
+
+  <!-- Book shelves section -->
+  <section class="d-md-flex justify-content-center justify-content-md-start py-4 mb-2 text-center container">
+          <div class="border border-2 rounded-3 container">
+              <div class="row row-cols-2 row-cols-md-4 g-4 mt-0 pb-2">
+                {% for book in books.items %}
+                    <div class="col">
+                      <div class="card">
+                        <a href="{{ url_for("book", book_id=book.id) }}"><img src="{{ book.image_url }}" class="card-img-top" alt="{{ book.title }}"></a>
+                        <div class="card-body">
+                          <div class="row g-0">
+                              <div class="col">
+                                  <i class="fas fa-star star-color">{{ book.rating }}</i>
+                              </div>
+                              <div class="col">
+                                  {% if book.year >= 0 %}
+                                      <div class="border border-dark rounded-3 w-75">{{ book.year }}</div>
+                                  {% else %}
+                                      <div class="border border-dark rounded-3 w-75">{{ book.year|abs }}BC</div>
+                                  {% endif %}
+                              </div>
+                          </div>
+                          <hr/>
+                          <p class="card-text">
+                            <a href="{{ url_for("book", book_id=book.id) }}" class="no-underline">{{ extract("t", book.title) }}</a><br>
+                            By {{ extract("a", book.written_by[0].name) | replace(", ", " and ") }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                {% endfor %}
+              </div>
+          </div>
+  </section>
+
+  <!-- Pagination buttons -->
+  <div class="container-fulid bg-muted text-center">
+    <div class="d-inline-flex">
+      {% for page_num in books.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
+        {% if page_num %}
+          {% if books.page == page_num %}
+            <a class="btn btn-primary my-3 mt-1 mx-2" href="{{ url_for("search", q=q, page=page_num) }}">{{ page_num }}</a>
+          {% else %}
+            <a class="btn btn-outline-primary my-3 mt-1 mx-2" href="{{ url_for("search", q=q, page=page_num) }}">{{ page_num }}</a>
+          {% endif %}
+        {% else %}
+          <div class="px-2"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  {% if q %}
+    <div class="d-flex vh-100 justify-content-center">
+      <div class="text-center container my-auto">
+        <!-- input section -->
+        <div class="d-flex flex-row mx-auto">
+            <form action="{{ url_for("search") }}" method="GET" class="w-75 mx-auto my-auto">
+                <input name="q" value="{{ q }}" class="form-control my-2 bg-dark text-light" type="search" placeholder="Search Book or Author" aria-label="Search">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+            </form>
+        </div>
+
+        <!-- no results -->
+        <section class="d-md-flex flex-row justify-content-md-start py-4 mb-2">
+          <div class="border border-2 rounded-3 container">
+            <h3 class="text-center my-4">Sorry, no results found</h3>
+          </div>
+        </section>
+      </div>
+    </div>
+  {% else %}
+    <!-- input section -->
+    <div class="d-flex flex-row text-center mx-auto justify-content-center vh-100">
+        <form action="{{ url_for("search") }}" method="GET" class="w-75 mx-auto my-auto">
+            <input name="q" value="{{ q }}" class="form-control my-2 bg-dark text-light" type="search" placeholder="Search Book or Author" aria-label="Search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+    </div>
+  {% endif %}
+{% endif %}
+
+{% endblock content %}

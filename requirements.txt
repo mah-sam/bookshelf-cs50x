@@ -1,0 +1,11 @@
+Flask
+flask-sqlalchemy
+email-validator
+flask-msearch
+flask-login
+flask-bcrypt
+flask-wtf
+requests
+pillow
+gunicorn
+psycopg2
