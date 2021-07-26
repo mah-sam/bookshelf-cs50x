@@ -11,11 +11,11 @@ choosing between "completed", "reading" and "planned".
 
 ### Specifications
 
-The app is using Flask for the backend (a python framework),
-and many other Flask dependent libraries (like Flask-SQLAlchemy) see requirements.txt for the full list.
-For the frontend, it's using Jinja to render HTML templates along with Bootstrap CSS classes.
+The app is using Flask for the backend (a python framework),  
+and many other Flask dependent libraries (like Flask-SQLAlchemy) see requirements.txt for the full list.  
+For the frontend, it's using Jinja to render HTML templates along with Bootstrap CSS classes.  
 Modular design using Python packaging for easier navigation between functionalities.  
-This github app uses sqlite to modify the database, but it's using postgresql for the deployment.
+This github app uses sqlite to modify the database, but it's using postgresql for the deployed version.
 
 ### Features
 
