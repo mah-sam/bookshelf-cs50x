@@ -29,7 +29,8 @@ This github app uses sqlite to modify the database, but it's using postgresql fo
 - The ability to search books by title, author and year easily thanks to msearch package.
 - The ability to browse all books while sorting by most popular,  highest rated, alphabetical order, and the year of publication.
 - Any HTML template displaying all the books in the database is paginated.
-- The ability to reset/remove user's account (Only on deployed ver)
+- The ability to reset/remove user's account (Only on deployed ver).
+- Integration of Google analytics (Only on deployed ver).
 
 ## Usage
 
